@@ -43,6 +43,7 @@ contract OneVote {
             }));
         }
     }
+    
 
     // One transaction needed for each time you add a voting address
     function giveRightToVote(address voter) public isOwner {
@@ -79,4 +80,6 @@ contract OneVote {
     function winnerName() public view returns (bytes32 winnerName_) {
         winnerName_ = proposals[winningProposal()].name;
     }
+
 }
+    
