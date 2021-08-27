@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\Carl\\Desktop\\Hardhat\\voteDapp\\contracts\\OneVote.sol": {
-      "lastModificationDate": 1630005765617,
-      "contentHash": "a2928640891c80ed945b85f666ee83c1",
+      "lastModificationDate": 1630069655119,
+      "contentHash": "559cb009368903b3a4e05ece6a00b451",
       "sourceName": "contracts/OneVote.sol",
       "solcConfig": {
         "version": "0.8.7",

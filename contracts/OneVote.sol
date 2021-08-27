@@ -24,6 +24,7 @@ contract OneVote {
     mapping(address => Voters) public voters;
 
     Proposal[] public proposals;
+    uint public propCount;
 
     modifier isOwner() {
         require(msg.sender == _owner, "Only the owner can use this function");
@@ -33,15 +34,26 @@ contract OneVote {
     // Feed an array to the constructor and it creates as 
     // many proposal object as candidates named in the array
     constructor(bytes32[] memory proposalNames) {
+        propCount = 0;
         _owner = msg.sender;
         voters[_owner].weight = 1;
-
         for (uint i=0; i<proposalNames.length; i++) {
-            proposals.push(Proposal({
-                name: proposalNames[i],
-                voteCount:0
-            }));
-        }
+            storeProposal(proposalNames[i]);
+            }
+    //    for (uint i=0; i<proposalNames.length; i++) {
+     //       proposals.push(Proposal({
+     //           name: proposalNames[i],
+     //           voteCount:0
+     //       }));
+        
+    }
+
+    function storeProposal(bytes32 _Name) private {
+        proposals[propCount] = Proposal({
+            name: _Name,
+            voteCount:0
+        });
+        propCount++;
     }
     
 
@@ -79,6 +91,15 @@ contract OneVote {
     // returns the name of the winning proposal
     function winnerName() public view returns (bytes32 winnerName_) {
         winnerName_ = proposals[winningProposal()].name;
+    }
+
+    function getStruct() public view returns (Proposal[] memory) {
+        Proposal[] memory prrops = new Proposal[](propCount);
+        for (uint j=0; j < propCount; j++) {
+            Proposal storage prrop = proposals[j];
+            prrops[j] = prrop;
+        }
+        return prrops;
     }
 
 }
