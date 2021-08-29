@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
+import "hardhat/console.sol";
+
 // Inspired by solidity docs
 contract OneVote {
     
@@ -37,23 +39,34 @@ contract OneVote {
         propCount = 0;
         _owner = msg.sender;
         voters[_owner].weight = 1;
+        console.log("Number of candidates: %s", proposalNames.length);
+        //for (uint i=0; i<=proposalNames.length; i++) {
+            //console.log("Adding candidate: %s", proposalNames);
+            //storeProposal(proposalNames[i]);
+            //console.log("The proposal number %s was made",i);
+            //console.log("PropCount: %s", propCount);
+            //propCount++;
+            
+            //}
+            //propCount--;
         for (uint i=0; i<proposalNames.length; i++) {
-            storeProposal(proposalNames[i]);
-            }
-    //    for (uint i=0; i<proposalNames.length; i++) {
-     //       proposals.push(Proposal({
-     //           name: proposalNames[i],
-     //           voteCount:0
-     //       }));
-        
+            proposals.push(Proposal({
+                name: proposalNames[i],
+                voteCount:0
+            }));
+            propCount++;
+            console.log("The proposal number %s was made",propCount);
+        }
     }
 
     function storeProposal(bytes32 _Name) private {
-        proposals[propCount] = Proposal({
+        // doesnt work with dynamic array, cant access [propCount] before creating it
+        //console.log("Now pushing the candidate %s", _Name);
+        proposals.push(Proposal({
             name: _Name,
-            voteCount:0
-        });
-        propCount++;
+            voteCount: 0
+        }));
+        //propCount++;
     }
     
 
@@ -100,6 +113,20 @@ contract OneVote {
             prrops[j] = prrop;
         }
         return prrops;
+        
+    }
+
+    function getNames() public view returns (bytes32[] memory) {
+        Proposal[] memory prrops = new Proposal[](propCount);
+        // Have to declare the bytes32 array like this in order to access
+        // by index (line 127) otherwise get out of bound error.
+        bytes32[] memory Candidates = new bytes32[](proposals.length);
+        for (uint j=0; j < propCount; j++) {
+            Proposal storage prrop = proposals[j];
+            prrops[j] = prrop;
+            Candidates[j] = prrop.name;
+        }
+        return Candidates;
     }
 
 }
