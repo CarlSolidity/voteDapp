@@ -77,6 +77,17 @@ contract OneVote {
         voters[voter].weight = 1;        
     }
 
+    // New function to approve many addresses to vote in one transaction
+    function approveManyVoters(address[] memory addVoters) public isOwner {
+        for (uint k=0; k< addVoters.length; k++) {
+            if(!voters[addVoters[k]].voted) {
+                if(voters[addVoters[k]].weight == 0) {
+                    voters[addVoters[k]].weight = 1;
+                }
+            }
+        }
+    }
+
     // Cast a vote if requirements are met
     function vote(uint proposal) public {
         Voters storage sender = voters[msg.sender];
@@ -115,7 +126,7 @@ contract OneVote {
         return prrops;
         
     }
-
+    // not needed, can access properties of the struct from getStruct
     function getNames() public view returns (bytes32[] memory) {
         Proposal[] memory prrops = new Proposal[](propCount);
         // Have to declare the bytes32 array like this in order to access
@@ -125,6 +136,20 @@ contract OneVote {
             Proposal storage prrop = proposals[j];
             prrops[j] = prrop;
             Candidates[j] = prrop.name;
+        }
+        return Candidates;
+    }
+
+    // not needed, can access properties of the struct from getStruct
+    function getVotes() public view returns (uint[] memory) {
+        Proposal[] memory prrops = new Proposal[](propCount);
+        // Have to declare the bytes32 array like this in order to access
+        // by index (line 127) otherwise get out of bound error.
+        uint[] memory Candidates = new uint[](proposals.length);
+        for (uint j=0; j < propCount; j++) {
+            Proposal storage prrop = proposals[j];
+            prrops[j] = prrop;
+            Candidates[j] = prrop.voteCount;
         }
         return Candidates;
     }

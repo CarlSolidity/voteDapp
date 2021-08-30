@@ -43,9 +43,30 @@ describe('OneVote', function() {
         // and an array of the candidates names created in the smart contract post deployment)
         // .toString() is needed to compare the values as array comparison needs deep equal otherwise.
            expect((await this.onevote.getNames.call()).toString()).to.equal(Names.toString());
-        })
+        });
 
-    })
+    });
+
+    describe('Add voters', function () {
+        it("Add several voters at once, vote with 3 addresses, winner should be X", async function () {
+            console.log("addr1 = %s", addr1);
+            console.log("addr2 = %s", addr2);
+            await this.onevote.approveManyVoters([addr1.address, addr2.address]);
+            await this.onevote.connect(addr1).vote(2);
+            await this.onevote.vote(2);
+            await this.onevote.connect(addr2).vote(1);
+
+            var proposals = await this.onevote.getStruct.call();
+            for (let i = 0; i < proposals.length; i++) {
+                console.log("the votes for %s are: %s",i, proposals[i].voteCount);
+            }
+
+            var winner = await this.onevote.winnerName.call()
+            //console.log("Winner is %s", winner.toString());
+            expect(await winner.toString()).to.equal(X.toString());
+            
+        });
+    });
 
     
 })
