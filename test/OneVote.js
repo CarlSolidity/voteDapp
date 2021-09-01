@@ -66,6 +66,16 @@ describe('OneVote', function() {
             expect(await winner.toString()).to.equal(X.toString());
             
         });
+
+        it("Try to vote unapproved.", async function() {
+            await expect(this.onevote.connect(addr1).vote(1)).to.be.revertedWith("No right to vote");
+        });
+
+        it("Try to vote twice", async function() {
+            await this.onevote.approveManyVoters([addr1.address, addr2.address]);
+            await this.onevote.connect(addr1).vote(2);
+            await expect(this.onevote.connect(addr1).vote(1)).to.be.revertedWith("This address already voted");
+        })
     });
 
     
